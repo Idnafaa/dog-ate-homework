@@ -17,8 +17,14 @@ EXCUSE = (
 
 def main():
     line = " ".join(EXCUSE.split())
+    # Stay inside the gate even if the wording grows later: cut at the
+    # last word boundary under the limit instead of failing the run.
+    if len(line) > 200:
+        line = line[:200].rsplit(" ", 1)[0]
     if not 1 <= len(line) <= 200:
         raise ValueError(f"excuse must be 1-200 chars, got {len(line)}")
+    if any(ord(ch) < 32 for ch in line):
+        raise ValueError("excuse must be a single printable line")
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as handle:
         handle.write(line)
